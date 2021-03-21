@@ -1,0 +1,14 @@
+---
+plugin: aws_ec2
+
+aws_access_key: 'your_key_goes_here'
+aws_secret_key: 'your_secret_goes_here'
+
+regions:
+  - 'closest_aws_region' #  e.g. sa-east-1
+
+hostnames:
+  - 'ip-address'
+
+keyed_groups:
+  - key: tags.inventory_group

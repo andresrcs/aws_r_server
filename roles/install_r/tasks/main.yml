@@ -1,0 +1,63 @@
+---
+- name: Install system dependencies
+  apt:
+    name:
+      - gfortran
+      - libreadline6-dev
+      - libx11-dev
+      - libxt-dev
+      - libpng-dev
+      - libjpeg-dev
+      - libcairo2-dev
+      - xvfb
+      - libbz2-dev
+      - libzstd-dev
+      - liblzma-dev
+      - libssh-dev
+      - libcurl4-openssl-dev
+      - libxml2-dev
+      - zlib1g-dev
+      - texinfo
+      - texlive
+      - texlive-fonts-extra
+      - screen
+      - wget
+      - libpcre2-dev
+      - openjdk-11-jdk
+      - libopenblas-base
+    state: present
+
+- name: Add Michael Rutter's apt key
+  apt_key:
+    keyserver: keyserver.ubuntu.com
+    id: E298A3A825C0D65DFD57CBB651716619E084DAB9
+    state: present
+
+- name: Add CRAN repository into sources list
+  apt_repository:
+    repo: deb https://cloud.r-project.org/bin/linux/ubuntu focal-cran40/
+    state: present
+
+- name: Install R
+  apt:
+    name:
+      - r-base
+      - r-base-dev
+    state: present
+
+- name: Create the site-library folder
+  file:
+    path: /usr/lib/R/site-library/
+    state: directory
+    mode: "0777"
+    recurse: true
+
+- name: Change libblas alternative to openblas
+  alternatives:
+    name: libblas.so.3-x86_64-linux-gnu
+    path: /usr/lib/x86_64-linux-gnu/openblas-pthread/libblas.so.3
+
+- name: Configure Java for R
+  command:
+    cmd: R CMD javareconf
+  changed_when: false

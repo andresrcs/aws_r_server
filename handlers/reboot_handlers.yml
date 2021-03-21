@@ -1,0 +1,15 @@
+---
+- name: reboot_ec2
+  become: False
+  connection: local
+  local_action:
+     module: ec2
+     region: "{{ aws_region }}"
+     aws_access_key: "{{ aws_access_key }}"
+     aws_secret_key: "{{ aws_secret_key }}"
+     state: 'restarted'
+     group: "{{ item.group }}"
+     instance_tags:
+      name: "{{ item.name }}"
+     wait: True
+  with_items: "{{ instances }}"

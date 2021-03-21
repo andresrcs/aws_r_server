@@ -1,0 +1,19 @@
+---
+- name: Install extra libraries for RStudio
+  hosts: aws_ec2
+  become: true
+
+  tasks:
+  - name: Add libreoffice repository from PPA
+    apt_repository:
+      repo: ppa:libreoffice/ppa
+
+  - name: Update apt repo and cache
+    apt:
+      update_cache: true
+      cache_valid_time: 3600
+
+  - name: Install libreoffice
+    apt:
+      name: libreoffice
+      state: present

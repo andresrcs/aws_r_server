@@ -1,0 +1,84 @@
+---
+- name: Provision EC2 instance
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  vars_files:
+    - vars/config_vars.yml
+
+  environment:
+    AWS_ACCESS_KEY_ID: "{{ aws_access_key }}"
+    AWS_SECRET_ACCESS_KEY: "{{ aws_secret_key }}"
+
+  pre_tasks:
+    - name: Update apt repo and cache
+      apt:
+        update_cache: true
+        cache_valid_time: 3600
+
+    - name: Install system dependencies
+      apt:
+        name:
+          - python3-pip
+        state: present
+
+    - name: Install python dependencies
+      pip:
+        name:
+          - boto3
+        state: present
+
+  tasks:
+    - name: Configure EC2 Security Groups
+      ec2_group:
+        name: "{{ item.name }}"
+        description: EC2 security group for RStudio
+        state: present
+        rules: "{{ item.rules }}"
+        region: "{{ aws_region }}"
+      with_items: "{{ security_groups }}"
+      tags: "security_group"
+
+    - name: Provision EC2 instances
+      ec2:
+        key_name: "{{ item.ssh_key | default('aws_server') }}"
+        instance_tags:
+          Name: "{{ item.name | default('') }}"
+          Application: rstudio_aws
+          inventory_group: "{{ item.group | default('') }}"
+          inventory_host: "{{ item.name | default('') }}"
+        group: "{{ item.security_group | default('') }}"
+        instance_type: "{{ item.type | default('t2.micro')}}"
+        image: "{{ aws_ec2_ami }}"
+        wait: yes
+        wait_timeout: 50088
+        exact_count: 1
+        count_tag:
+          inventory_host: "{{ item.name | default('') }}"
+        region: "{{ aws_region }}"
+        volumes:
+         - device_name: /dev/sda1
+           volume_size: 30
+           delete_on_termination: true
+           volume_type: gp2
+      register: created_instances
+      with_items: "{{ instances }}"
+
+    - name: Add EC2 instances to inventory groups
+      add_host:
+        name: "{{ item.1.tagged_instances.0.public_ip }}"
+        groups: "{{ item.1.item.group }},{{ item.1.item.name }}"
+        ansible_user: ubuntu
+        host_key_checking: false
+        ansible_become_method: sudo
+        ansible_python_interpreter: /usr/bin/python3
+        ansible_ssh_private_key_file: ~/.ssh/aws_server.pem
+      when: item.1.instances is defined
+      with_indexed_items: "{{ created_instances.results }}"
+
+- hosts: aws
+  gather_facts: false
+  tasks:
+    - name: Wait for hosts to become available
+      wait_for_connection:

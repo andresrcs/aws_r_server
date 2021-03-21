@@ -1,0 +1,36 @@
+---
+- name: Get current RStudio version
+  command: "rstudio-server version"
+  register: version_rstudio
+  changed_when: false
+  failed_when: false
+
+- block:
+  - name: Download rstudio-server preview
+    get_url:
+      url: "https://s3.amazonaws.com/rstudio-ide-build/server/bionic/amd64/rstudio-server-{{ rstudio_version }}-amd64.deb"
+      dest: ~/rstudio-server-{{ rstudio_version }}-amd64.deb
+    when: preview_version
+
+  - name: Download rstudio-server stable
+    get_url:
+      url: "https://download2.rstudio.org/server/bionic/amd64/rstudio-server-{{ rstudio_version }}-amd64.deb"
+      dest: ~/rstudio-server-{{ rstudio_version }}-amd64.deb
+    when: not preview_version
+
+  - name: Install rstudio-server
+    command:
+      cmd: gdebi ~/rstudio-server-{{ rstudio_version }}-amd64.deb -n
+      creates: /usr/sbin/rstudio-server
+
+  - name: Remove installer
+    file:
+      path: "~/rstudio-server-{{ rstudio_version }}-amd64.deb"
+      state: absent
+
+  - name: Make sure rstudio-server is started
+    service:
+      name: rstudio-server
+      enabled: true
+      state: started
+  when: "rstudio_version | string not in version_rstudio|string"

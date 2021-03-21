@@ -1,0 +1,97 @@
+---
+# AWS Config Vars ##############################################################
+
+# AWS credentials
+aws_access_key: 'your_key_goes_here'
+aws_secret_key: 'your_secret_goes_here'
+
+# General AWS configurations
+aws_region: 'closest_aws_region' #  e.g. sa-east-1
+aws_ec2_ami: ami-0c3c87b7d583d618f # Ubuntu 20.04 LTS
+
+# List of instances
+instances:
+  - name: rstudio
+    group: aws
+    security_group: ["default", "public_server"]
+    ssh_key: aws_server
+
+# AWS firewall settings
+security_groups:
+  - name: public_server
+    rules:
+      - proto: tcp # http
+        from_port: 80
+        to_port: 80
+        cidr_ip: 0.0.0.0/0
+      - proto: tcp  # https
+        from_port: 443
+        to_port: 443
+        cidr_ip: 0.0.0.0/0
+      - proto: tcp  # SSH TCP
+        from_port: 22
+        to_port: 22
+        cidr_ip: 0.0.0.0/0
+      - proto: udp  # SSH UDP
+        from_port: 22
+        to_port: 22
+        cidr_ip: 0.0.0.0/0
+      - proto: tcp  # PostgreSQL
+        from_port: 5432
+        to_port: 5432
+        cidr_ip: 0.0.0.0/0
+      - proto: tcp  # NoIp Client
+        from_port: 5432
+        to_port: 5432
+        cidr_ip: 0.0.0.0/0
+    rules_egress: []
+
+# System Configurations ########################################################
+
+# Personal user
+personal_user: 'your_linux_user'
+personal_user_password: 'very_secure_password'
+
+# Swap parameters
+swap_file_path: /var/swap
+# Use any of the following suffixes
+# c=1
+# w=2
+# b=512
+# kB=1000
+# K=1024
+# MB=1000*1000
+# M=1024*1024
+# xM=M
+# GB=1000*1000*1000
+# G=1024*1024*1024
+swap_file_size: 3GB
+swappiness: '10'
+
+# Language and locale
+language_pack: []                 #  e.g. language-pack-es-base
+default_locale: 'en_US.UTF-8'     #  e.g. es_PE.UTF-8
+
+# Security Configurations ######################################################
+
+# Notification email for fail2ban
+send_email: true
+fail2ban_email: your_email@something.com
+
+# Postgresql Password
+postgres_password: 'very_secure_password'
+
+# Access rules for Postgresql
+postgresql_rules:
+  - { contype: local, users: all, address: samehost, method: trust }
+  - { contype: local, users: postgres, address: samehost, method: trust }
+  - { contype: host, users: all, address: 0.0.0.0/0, method: password }
+
+# Main Software Versions #######################################################
+
+# Shiny-server version to install
+shiny_server_version: '1.5.16.958'
+
+# RStudio version to install
+rstudio_version: '1.4.1106'
+preview_version: false

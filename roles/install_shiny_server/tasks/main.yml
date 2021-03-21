@@ -1,0 +1,29 @@
+---
+- name: Check shiny-server version installed
+  command: "shiny-server --version"
+  register: version_shiny
+  changed_when: false
+  failed_when: false
+
+- block:
+  - name: Download shiny-server
+    get_url:
+      url: "https://download3.rstudio.org/ubuntu-14.04/x86_64/shiny-server-{{ shiny_server_version }}-amd64.deb"
+      dest: "~/shiny-server-{{ shiny_server_version }}-amd64.deb"
+
+  - name: Install shiny-server
+    command:
+      cmd: "gdebi ~/shiny-server-{{ shiny_server_version }}-amd64.deb -n"
+      creates: /usr/bin/shiny-server
+
+  - name: Remove installer
+    file:
+      path: "~/shiny-server-{{ shiny_server_version }}-amd64.deb"
+      state: absent
+
+  - name: Make sure shiny-server is started
+    service:
+      name: shiny-server
+      enabled: true
+      state: started
+  when: "shiny_server_version | string not in version_shiny | string"
