@@ -12,20 +12,10 @@
     AWS_SECRET_ACCESS_KEY: "{{ aws_secret_key }}"
 
   pre_tasks:
-    - name: Update apt repo and cache
-      apt:
-        update_cache: true
-        cache_valid_time: 3600
-
-    - name: Install system dependencies
-      apt:
-        name:
-          - python3-pip
-        state: present
-
     - name: Install python dependencies
       pip:
         name:
+          - boto
           - boto3
         state: present
 
