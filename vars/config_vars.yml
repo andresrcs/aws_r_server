@@ -40,10 +40,6 @@ security_groups:
         from_port: 5432
         to_port: 5432
         cidr_ip: 0.0.0.0/0
-      - proto: tcp  # NoIp Client
-        from_port: 5432
-        to_port: 5432
-        cidr_ip: 0.0.0.0/0
     rules_egress: []
 
 # System Configurations ########################################################
