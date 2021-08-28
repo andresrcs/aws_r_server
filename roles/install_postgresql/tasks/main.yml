@@ -47,6 +47,7 @@
   postgresql_user:
     name: "{{ ansible_user }}"
     password: "{{ postgres_password }}"
+    role_attr_flags: CREATEDB,CREATEROLE,SUPERUSER
     state: present
 
 - name: Create database for the main user
