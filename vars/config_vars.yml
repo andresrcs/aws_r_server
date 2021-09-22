@@ -89,5 +89,5 @@ postgresql_rules:
 shiny_server_version: '1.5.16.958'
 
 # RStudio version to install
-rstudio_version: '1.4.1106'
+rstudio_version: '1.4.1717'
 preview_version: false
