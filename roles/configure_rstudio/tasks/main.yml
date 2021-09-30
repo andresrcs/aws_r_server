@@ -9,7 +9,7 @@
 - name: Allow access to /srv/shiny-server/ folder
   lineinfile:
     path: /etc/rstudio/rsession.conf
-    line: directory-view-whitelist=/srv/shiny-server
+    line: directory-view-allow-list=/srv/shiny-server
     state: present
     create: true
 
