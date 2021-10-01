@@ -8,13 +8,13 @@
 - block:
   - name: Download rstudio-server preview
     get_url:
-      url: "https://s3.amazonaws.com/rstudio-ide-build/server/bionic/amd64/rstudio-server-{{ rstudio_version }}-amd64.deb"
+      url: "https://s3.amazonaws.com/rstudio-ide-build/server/bionic/amd64/rstudio-server-{{ rstudio_version.replace('+', '-') }}-amd64.deb"
       dest: ~/rstudio-server-{{ rstudio_version }}-amd64.deb
     when: preview_version
 
   - name: Download rstudio-server stable
     get_url:
-      url: "https://download2.rstudio.org/server/bionic/amd64/rstudio-server-{{ rstudio_version }}-amd64.deb"
+      url: "https://download2.rstudio.org/server/bionic/amd64/rstudio-server-{{ rstudio_version.replace('+', '-') }}-amd64.deb"
       dest: ~/rstudio-server-{{ rstudio_version }}-amd64.deb
     when: not preview_version
 
