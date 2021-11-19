@@ -14,7 +14,6 @@
   - name: Install shiny-server
     command:
       cmd: "gdebi ~/shiny-server-{{ shiny_server_version }}-amd64.deb -n"
-      creates: /usr/bin/shiny-server
 
   - name: Remove installer
     file:

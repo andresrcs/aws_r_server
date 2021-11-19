@@ -21,7 +21,6 @@
   - name: Install rstudio-server
     command:
       cmd: gdebi ~/rstudio-server-{{ rstudio_version }}-amd64.deb -n
-      creates: /usr/sbin/rstudio-server
 
   - name: Remove installer
     file:
