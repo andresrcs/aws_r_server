@@ -7,7 +7,7 @@ aws_secret_key: 'your_secret_goes_here'
 
 # General AWS configurations
 aws_region: 'closest_aws_region' #  e.g. sa-east-1
-aws_ec2_ami: ami-0c3c87b7d583d618f # Ubuntu 20.04 LTS
+aws_ec2_ami: ami-090006f29ecb2d79a # Ubuntu 20.04 LTS
 
 # List of instances
 instances:
@@ -82,6 +82,8 @@ postgresql_rules:
   - { contype: local, users: all, address: samehost, method: trust }
   - { contype: local, users: postgres, address: samehost, method: trust }
   - { contype: host, users: all, address: 0.0.0.0/0, method: password }
+  - { contype: host, users: all, address: 127.0.0.1/32, method: md5 }
+  - { contype: host, users: all, address: '::1/128', method: trust }
 
 # Main Software Versions #######################################################
 
@@ -89,5 +91,5 @@ postgresql_rules:
 shiny_server_version: '1.5.17.973'
 
 # RStudio version to install
-rstudio_version: '2021.09.1+372'
+rstudio_version: '2021.09.2+382'
 preview_version: false

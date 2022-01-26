@@ -31,34 +31,35 @@
       tags: "security_group"
 
     - name: Provision EC2 instances
-      ec2:
+      ec2_instance:
         key_name: "{{ item.ssh_key | default('aws_server') }}"
-        instance_tags:
+        tags:
           Name: "{{ item.name | default('') }}"
           Application: rstudio_aws
           inventory_group: "{{ item.group | default('') }}"
           inventory_host: "{{ item.name | default('') }}"
-        group: "{{ item.security_group | default('') }}"
+        security_groups: "{{ item.security_group | default('') }}"
         instance_type: "{{ item.type | default('t2.micro')}}"
-        image: "{{ aws_ec2_ami }}"
+        image:
+          id: "{{ aws_ec2_ami }}"
         wait: yes
         wait_timeout: 50088
-        exact_count: 1
-        count_tag:
-          inventory_host: "{{ item.name | default('') }}"
+        network:
+          assign_public_ip: true
         region: "{{ aws_region }}"
         volumes:
-         - device_name: /dev/sda1
-           volume_size: 30
-           delete_on_termination: true
-           volume_type: gp2
+         - device_name: '/dev/sda1'
+           ebs:
+              volume_size: 30
+              delete_on_termination: true
+              volume_type: gp2
       register: created_instances
       with_items: "{{ instances }}"
 
     - name: Add EC2 instances to inventory groups
       add_host:
-        name: "{{ item.1.tagged_instances.0.public_ip }}"
-        groups: "{{ item.1.item.group }},{{ item.1.item.name }}"
+        name: "{{ item.1.instances.0.public_ip_address }}"
+        groups: "{{ item.1.instances.0.tags.inventory_group }},{{ item.1.instances.0.tags.inventory_host }}"
         ansible_user: ubuntu
         host_key_checking: false
         ansible_become_method: sudo

@@ -47,7 +47,7 @@
         password: "{{ personal_user_password | password_hash('sha512') }}"
         update_password: on_create
 
-    - name: Add sudo rights for personal user.
+    - name: Add sudo rights for personal user
       lineinfile:
         dest: /etc/sudoers
         regexp: '^{{ personal_user }}'
