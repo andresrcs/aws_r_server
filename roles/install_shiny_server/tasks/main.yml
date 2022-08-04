@@ -8,7 +8,7 @@
 - block:
   - name: Download shiny-server
     get_url:
-      url: "https://download3.rstudio.org/ubuntu-14.04/x86_64/shiny-server-{{ shiny_server_version }}-amd64.deb"
+      url: "https://download3.rstudio.org/ubuntu-18.04/x86_64/shiny-server-{{ shiny_server_version }}-amd64.deb"
       dest: "~/shiny-server-{{ shiny_server_version }}-amd64.deb"
 
   - name: Install shiny-server
