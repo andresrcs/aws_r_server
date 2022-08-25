@@ -70,10 +70,6 @@ default_locale: 'en_US.UTF-8'     #  e.g. es_PE.UTF-8
 
 # Security Configurations ######################################################
 
-# Notification email for fail2ban
-send_email: true
-fail2ban_email: your_email@something.com
-
 # Postgresql Password
 postgres_password: 'very_secure_password'
 
