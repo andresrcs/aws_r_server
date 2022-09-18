@@ -12,10 +12,20 @@
     AWS_SECRET_ACCESS_KEY: "{{ aws_secret_key }}"
 
   pre_tasks:
+    - name: Update apt repo and cache
+      apt:
+        update_cache: true
+        cache_valid_time: 3600
+
+    - name: Install system dependencies
+      apt:
+        name:
+          - python3-pip
+        state: present
+
     - name: Install python dependencies
       pip:
         name:
-          - boto
           - boto3
         state: present
 
@@ -31,7 +41,7 @@
       tags: "security_group"
 
     - name: Provision EC2 instances
-      ec2_instance:
+      amazon.aws.ec2_instance:
         key_name: "{{ item.ssh_key | default('aws_server') }}"
         tags:
           Name: "{{ item.name | default('') }}"
@@ -48,7 +58,7 @@
           assign_public_ip: true
         region: "{{ aws_region }}"
         volumes:
-         - device_name: '/dev/sda1'
+         - device_name: /dev/sda1
            ebs:
               volume_size: 30
               delete_on_termination: true

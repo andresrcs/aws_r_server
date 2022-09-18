@@ -7,12 +7,16 @@
     - vars/config_vars.yml
 
   tasks:
-    - name: Install system dependencies
+    - name: Make sure system dependencies are installed
       apt:
         name:
-          - make
           - libcairo2-dev
+          - libxt-dev
+          - libharfbuzz-dev
+          - git
+          - cmake
           - pandoc
+          - pandoc-citeproc
         state: present
 
     - name: Define R package dependencies
@@ -23,7 +27,11 @@
 
     - name: Install R package dependencies
       become_flags: 'su - -c'
-      shell: "R -e \"install.packages({{ shiny_dependencies }} [!({{ shiny_dependencies }} %in% installed.packages())], repos=c('https://packagemanager.rstudio.com/all/__linux__/focal/latest', 'https://cran.rstudio.com/'), lib=c('/usr/lib/R/site-library/'))\""
+      shell: "R -e \"install.packages({{ shiny_dependencies }}
+         [!({{ shiny_dependencies }} %in% installed.packages())],
+         repos=c('https://packagemanager.rstudio.com/all/__linux__/{{ ansible_distribution_release }}/latest',
+         'https://cran.rstudio.com/'),
+         lib='/usr/lib/R/site-library')\""
       register: r_install
       changed_when: r_install.stderr != ""
 

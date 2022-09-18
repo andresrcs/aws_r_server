@@ -3,7 +3,7 @@
   apt:
     name:
       - gfortran
-      - libreadline6-dev
+      - libreadline-dev
       - libx11-dev
       - libxt-dev
       - libpng-dev
@@ -14,8 +14,12 @@
       - libzstd-dev
       - liblzma-dev
       - libssh-dev
+      - libblas-dev
+      - libopenblas-base
+      - libopenblas-dev
+      - liblapack-dev
+      - liblapack3
       - libcurl4-openssl-dev
-      - libxml2-dev
       - zlib1g-dev
       - texinfo
       - texlive
@@ -24,19 +28,22 @@
       - wget
       - libpcre2-dev
       - openjdk-11-jdk
-      - libopenblas-base
     state: present
 
 - name: Add Michael Rutter's apt key
-  apt_key:
-    keyserver: keyserver.ubuntu.com
-    id: E298A3A825C0D65DFD57CBB651716619E084DAB9
-    state: present
+  get_url:
+    url: https://cloud.r-project.org/bin/linux/ubuntu/marutter_pubkey.asc
+    dest: /etc/apt/trusted.gpg.d/cran_ubuntu_key.asc
 
 - name: Add CRAN repository into sources list
   apt_repository:
-    repo: deb https://cloud.r-project.org/bin/linux/ubuntu focal-cran40/
+    filename: cran40
+    repo: deb https://cloud.r-project.org/bin/linux/ubuntu {{ ansible_distribution_release }}-cran40/
     state: present
+
+- name: Update apt repo and cache
+  apt:
+    update_cache: true
 
 - name: Install R
   apt:
@@ -51,6 +58,15 @@
     state: directory
     mode: "0777"
     recurse: true
+
+- name: Create Rprofile.site file
+  template:
+    src: Rprofile_site.j2
+    dest: /usr/lib/R/etc/Rprofile.site
+    owner: root
+    group: root
+    mode: '0644'
+    force: true
 
 - name: Change libblas alternative to openblas
   alternatives:

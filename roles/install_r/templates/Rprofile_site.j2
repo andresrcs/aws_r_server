@@ -1,0 +1,8 @@
+local({
+    r <- getOption("repos")
+    r["RSPM"] <- "https://packagemanager.rstudio.com/all/__linux__/{{ ansible_distribution_release }}/latest"
+    r["CRAN"] <- "https://cloud.r-project.org"
+    options(repos = r)
+})
+options(bitmapType = 'cairo')
+options(HTTPUserAgent = sprintf("R/%s R (%s)", getRversion(), paste(getRversion(), R.version["platform"], R.version["arch"], R.version["os"])))

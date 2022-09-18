@@ -1,7 +1,24 @@
 ---
+- name: Addthe GPG signing key for the PostgreSQL repository
+  get_url:
+    url: https://www.postgresql.org/media/keys/ACCC4CF8.asc
+    dest: /etc/apt/trusted.gpg.d/postgresql_ubuntu_key.asc
+
+- name: Add PostgreSQL repository
+  apt_repository:
+    filename: pgdg
+    repo: deb http://apt.postgresql.org/pub/repos/apt/ {{ ansible_distribution_release }}-pgdg main
+    state: present
+
+- name: Update apt repo and cache
+  apt:
+    update_cache: true
+    cache_valid_time: 3600
+
 - name: Install PostgreSQL libraries
   apt:
     name:
+      - gnupg2
       - libpq-dev
       - postgresql
       - postgresql-client

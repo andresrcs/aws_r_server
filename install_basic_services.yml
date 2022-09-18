@@ -46,14 +46,20 @@
         name: "{{ personal_user }}"
         password: "{{ personal_user_password | password_hash('sha512') }}"
         update_password: on_create
+        append: true
+        groups:
+          - root
 
-    - name: Add sudo rights for personal user
+    - name: Add sudo rights for main users
       lineinfile:
         dest: /etc/sudoers
-        regexp: '^{{ personal_user }}'
-        line: '{{ personal_user }} ALL=(ALL) NOPASSWD: ALL'
+        regexp: '^{{ item.user }}'
+        line: '{{ item.user }} ALL=(ALL) NOPASSWD: ALL'
         state: present
         validate: 'visudo -cf %s'
+      with_items:
+        - user: '{{ ansible_user }}'
+        - user: '{{ personal_user }}'
 
     - name: Install and configure Nginx
       import_role:

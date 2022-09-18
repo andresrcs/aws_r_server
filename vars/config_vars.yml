@@ -7,7 +7,7 @@ aws_secret_key: 'your_secret_goes_here'
 
 # General AWS configurations
 aws_region: 'closest_aws_region' #  e.g. sa-east-1
-aws_ec2_ami: ami-090006f29ecb2d79a # Ubuntu 20.04 LTS
+aws_ec2_ami: 'ami-08ae71fd7f1449df1' # Ubuntu 22.04 LTS
 
 # List of instances
 instances:
@@ -15,6 +15,7 @@ instances:
     group: aws
     security_group: ["default", "public_server"]
     ssh_key: aws_server
+    type: 't2.micro'
 
 # AWS firewall settings
 security_groups:

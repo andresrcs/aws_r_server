@@ -4,10 +4,6 @@
   become: true
 
   tasks:
-  - name: Add libreoffice repository from PPA
-    apt_repository:
-      repo: ppa:libreoffice/ppa
-
   - name: Update apt repo and cache
     apt:
       update_cache: true
