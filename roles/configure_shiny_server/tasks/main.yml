@@ -44,18 +44,18 @@
     blockinfile:
       path: /etc/nginx/sites-enabled/default_site
       block: |2
-        rewrite ^/shiny$ $scheme://$http_host/shiny/ permanent;
+            rewrite ^/shiny$ $scheme://$http_host/shiny/ permanent;
 
-        location /shiny/ {
-            rewrite ^/shiny/(.*)$ /$1 break;
-            proxy_pass http://localhost:3838;
-            proxy_redirect / $scheme://$http_host/shiny/;
-            proxy_http_version 1.1;
-            proxy_set_header Upgrade $http_upgrade;
-            proxy_set_header Connection $connection_upgrade;
-            proxy_read_timeout 20d;
-            proxy_buffering off;
-        }
+            location /shiny/ {
+                rewrite ^/shiny/(.*)$ /$1 break;
+                proxy_pass http://localhost:3838;
+                proxy_redirect / $scheme://$http_host/shiny/;
+                proxy_http_version 1.1;
+                proxy_set_header Upgrade $http_upgrade;
+                proxy_set_header Connection $connection_upgrade;
+                proxy_read_timeout 20d;
+                proxy_buffering off;
+            }
       marker: "# <!-- {mark} ANSIBLE MANAGED BLOCK #2 -->"
       insertafter: "server_name _;"
     notify: restart_nginx
