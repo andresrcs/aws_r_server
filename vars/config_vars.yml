@@ -7,7 +7,7 @@ aws_secret_key: 'your_secret_goes_here'
 
 # General AWS configurations
 aws_region: 'closest_aws_region' #  e.g. sa-east-1
-aws_ec2_ami: 'ami-08ae71fd7f1449df1' # Ubuntu 22.04 LTS
+aws_ec2_ami: 'ami-015e30624fffff117' # Ubuntu 22.04 LTS
 
 # List of instances
 instances:
@@ -85,8 +85,8 @@ postgresql_rules:
 # Main Software Versions #######################################################
 
 # Shiny-server version to install
-shiny_server_version: '1.5.19.995'
+shiny_server_version: '1.5.20.1002'
 
 # RStudio version to install
-rstudio_version: '2022.07.1+554'
+rstudio_version: '2022.12.0+353'
 preview_version: false
