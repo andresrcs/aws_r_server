@@ -15,7 +15,7 @@
       - liblzma-dev
       - libssh-dev
       - libblas-dev
-      - libopenblas-base
+      - libopenblas-dev
       - libopenblas-dev
       - liblapack-dev
       - liblapack3
